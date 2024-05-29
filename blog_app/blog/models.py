@@ -1,3 +1,50 @@
+from django.conf import settings
 from django.db import models
+from django.db.models.functions import Now
+from django.utils import timezone
 
-# Create your models here.
+
+class Post(models.Model):
+    """
+    Hold details and contents of the blog post.
+    """
+
+    class Keys:
+        id = "id"
+        title = "title"
+        slug = "slug"
+        author = "author"
+        body = "body"
+        publish = "publish"
+        publish_db_default = "publish_db_default"
+        created = "created"
+        updated = "updated"
+
+    class Status(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        PUBLISHED = "published", "Published"
+
+    class Meta:
+        ordering = ["-publish"]
+        indexes = [
+            models.Index(fields=["-publish"]),
+        ]
+
+    title = models.CharField(max_length=254)
+    slug = models.SlugField(max_length=254)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="blog_posts",
+    )
+    body = models.TextField()
+    status = models.CharField(max_length=32, choices=Status, default=Status.DRAFT)
+
+    publish = models.DateTimeField(default=timezone.now)
+    publish_db_default = models.DateTimeField(db_default=Now())  # Django5 db_default
+
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return str(self.title or "")
