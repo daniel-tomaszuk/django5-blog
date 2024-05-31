@@ -15,6 +15,7 @@ class Post(models.Model):
         slug = "slug"
         author = "author"
         body = "body"
+        status = "status"
         publish = "publish"
         publish_db_default = "publish_db_default"
         created = "created"
