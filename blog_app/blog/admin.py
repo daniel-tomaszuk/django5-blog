@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from blog.models import Comment
 from blog.models import Post
 
 
@@ -26,3 +27,16 @@ class PostAdmin(admin.ModelAdmin):
 
     # Django5 facet filter counts
     show_facets = admin.ShowFacets.ALLOW
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = (
+        Comment.Keys.name,
+        Comment.Keys.email,
+        Comment.Keys.post,
+        Comment.Keys.created,
+        Comment.Keys.active,
+    )
+    list_filter = (Comment.Keys.active, Comment.Keys.created, Comment.Keys.updated)
+    search_fields = (Comment.Keys.name, Comment.Keys.email, Comment.Keys.body)
