@@ -23,3 +23,6 @@ class TestPostModel:
 
         assert all_posts_count == 2 * self.SETUP_POSTS_COUNT + 1
         assert published_posts_count == self.SETUP_POSTS_COUNT + 1
+
+    def test_post_slug_unique_for_date(self):
+        pass

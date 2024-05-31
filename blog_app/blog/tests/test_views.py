@@ -11,6 +11,10 @@ from blog.models import Post
 class TestPostViews:
     SETUP_POSTS_COUNT = 2
 
+    @classmethod
+    def setup_class(cls):
+        cls.list_url = reverse("blog:post_list")
+
     def setup_method(self, method: Callable):
         for _ in range(self.SETUP_POSTS_COUNT):
             PostFactory()
@@ -19,8 +23,7 @@ class TestPostViews:
             PostFactory(status=Post.Status.PUBLISHED)
 
     def test_list_posts__published_posts_only(self, client):
-        url: str = reverse("create-short-url")
-        response = client.get(url)
+        response = client.get(self.list_url)
         pass
 
     def test_get_post_details(self, client):
@@ -30,4 +33,13 @@ class TestPostViews:
         pass
 
     def test_get_post_details__not_found(self, client):
+        pass
+
+    def test_post_absolute_url(self):
+        pass
+
+    def test_pagination__empty_page(self):
+        pass
+
+    def test_pagination__page_not_an_integer(self):
         pass
