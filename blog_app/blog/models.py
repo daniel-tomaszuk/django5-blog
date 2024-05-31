@@ -4,6 +4,15 @@ from django.db.models.functions import Now
 from django.utils import timezone
 
 
+class PublishedManager(models.Manager):
+    """
+    Post objects manager that uses only published posts.
+    """
+
+    def get_queryset(self):
+        return super().get_queryset().filter(status=Post.Status.PUBLISHED)
+
+
 class Post(models.Model):
     """
     Hold details and contents of the blog post.
@@ -20,6 +29,10 @@ class Post(models.Model):
         publish_db_default = "publish_db_default"
         created = "created"
         updated = "updated"
+
+        # object managers
+        objects = "objects"
+        published = "published"
 
     class Status(models.TextChoices):
         DRAFT = "draft", "Draft"
@@ -46,6 +59,10 @@ class Post(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    # object managers
+    objects = models.Manager()
+    published = PublishedManager()
 
     def __str__(self) -> str:
         return str(self.title or "")
