@@ -1,6 +1,8 @@
+import markdown
 from django import template
 from django.db.models import Count
 from django.db.models import QuerySet
+from django.utils.safestring import mark_safe
 
 from blog.models import Post
 
@@ -37,3 +39,12 @@ def get_most_commented_posts(count: int = 5) -> QuerySet[Post]:
         .only(Post.Keys.title)
         .order_by("-total_comments")[:count]
     )
+
+
+@register.filter(name="markdown")
+def markdown_format(text: str) -> str:
+    """
+    Custom template tag filter that allows transforming markdown syntax into HTML.
+    Marks returned HTML code as safe for Django to use.
+    """
+    return mark_safe(markdown.markdown(text))
