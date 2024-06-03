@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.db.models import Count
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -27,7 +28,7 @@ class PostListView(ListView):
             queryset = queryset.filter(tags__slug__in=[tag_slug])
         return queryset
 
-    def get_context_data(self, *args, object_list=None, **kwargs):
+    def get_context_data(self, *args, object_list=None, **kwargs) -> dict:
         context: dict = super().get_context_data(
             *args, object_list=object_list, **kwargs
         )
@@ -55,6 +56,17 @@ class PostDetailsView(DetailView):
         comments: QuerySet[Comment] = self.object.comments.filter(active=True)
         context["comments"] = comments
         context["form"] = CommentForm()
+
+        # get similar posts by tag
+        post_tags_ids: QuerySet = self.object.tags.values_list("id", flat=True)
+        similar_posts: QuerySet[Post] = Post.published.filter(
+            tags__in=post_tags_ids
+        ).exclude(id=self.object.id)
+        similar_posts: QuerySet[Post] = similar_posts.annotate(
+            same_tags_count=Count(Post.Keys.tags)
+        ).order_by("-same_tags_count", "-publish")[:4]
+
+        context["similar_posts"] = similar_posts
         return context
 
 

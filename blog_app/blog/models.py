@@ -35,6 +35,7 @@ class Post(models.Model):
         # object managers
         objects = "objects"
         published = "published"
+        tags = "tags"
 
         # reverse relations
         comments = "comments"
