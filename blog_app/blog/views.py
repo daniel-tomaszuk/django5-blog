@@ -20,6 +20,20 @@ class PostListView(ListView):
     template_name = "blog/post/list.html"
     paginate_by = 3
 
+    def get_queryset(self) -> QuerySet[Post]:
+        queryset: QuerySet[Post] = super().get_queryset()
+        tag_slug: str = self.kwargs.get("tag_slug")
+        if tag_slug:
+            queryset = queryset.filter(tags__slug__in=[tag_slug])
+        return queryset
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context: dict = super().get_context_data(
+            *args, object_list=object_list, **kwargs
+        )
+        context.setdefault("tag", self.kwargs.get("tag_slug"))
+        return context
+
 
 class PostDetailsView(DetailView):
     model = Post

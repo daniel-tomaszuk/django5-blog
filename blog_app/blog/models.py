@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.functions import Now
 from django.urls import reverse
 from django.utils import timezone
+from taggit.managers import TaggableManager
 
 
 class PublishedManager(models.Manager):
@@ -67,6 +68,7 @@ class Post(models.Model):
     # object managers
     objects = models.Manager()
     published = PublishedManager()
+    tags = TaggableManager()
 
     def get_absolute_url(self) -> str:
         return reverse(

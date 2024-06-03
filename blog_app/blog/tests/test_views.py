@@ -43,3 +43,6 @@ class TestPostViews:
 
     def test_pagination__page_not_an_integer(self):
         pass
+
+    def test_get_post_by_tag_slug(self):
+        pass

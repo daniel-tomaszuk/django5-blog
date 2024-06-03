@@ -26,3 +26,6 @@ class TestPostModel:
 
     def test_post_slug_unique_for_date(self):
         pass
+
+    def test_tags_manager(self):
+        pass
