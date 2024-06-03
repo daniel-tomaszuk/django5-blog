@@ -28,6 +28,12 @@ SECRET_KEY = "django-insecure-3n1eobrd@poxqy(owv4*=o3biy_73smb7!70lju_4ls)^r5$t#
 DEBUG = True
 
 ALLOWED_HOSTS = []
+if DEBUG:
+    ALLOWED_HOSTS += [
+        "0.0.0.0",
+        "127.0.0.1",
+        "localhost",
+    ]
 
 # ID used for the sitemap
 SITE_ID = 1

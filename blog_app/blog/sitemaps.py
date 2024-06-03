@@ -2,6 +2,8 @@ import datetime
 
 from django.contrib.sitemaps import Sitemap
 from django.db.models import QuerySet
+from django.urls import reverse
+from taggit.models import Tag
 
 from blog.models import Post
 
@@ -26,3 +28,14 @@ class PostSitemap(Sitemap):
         """
         location: str = super().location(item)
         return location
+
+
+class TagSitemap(Sitemap):
+    changefreq = "daily"
+    priority = 0.8
+
+    def items(self) -> QuerySet[Tag]:
+        return Tag.objects.all()
+
+    def location(self, obj) -> str:
+        return reverse("blog:post_list_by_tag", args=[obj.slug])

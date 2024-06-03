@@ -21,9 +21,11 @@ from django.urls import include
 from django.urls import path
 
 from blog.sitemaps import PostSitemap
+from blog.sitemaps import TagSitemap
 
 sitemaps = {
     "posts": PostSitemap,
+    "tags": TagSitemap,
 }
 
 
