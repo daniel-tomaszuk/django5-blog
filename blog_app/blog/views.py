@@ -1,16 +1,16 @@
+from django.contrib.postgres.search import SearchVector
 from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
-from django.views.generic import CreateView
 from django.views.generic import DetailView
-from django.views.generic import FormView
 from django.views.generic import ListView
 
 from blog.forms import CommentForm
 from blog.forms import EmailPostForm
+from blog.forms import SearchForm
 from blog.models import Comment
 from blog.models import Post
 
@@ -119,4 +119,28 @@ def post_comment(request, post_id: int):
         request=request,
         template_name="blog/post/comment.html",
         context=dict(post=post, form=form, comment=comment),
+    )
+
+
+def post_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+
+    if "query" in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query: str = form.cleaned_data.get("query")
+            results: QuerySet[Post] = Post.published.annotate(
+                search=SearchVector(Post.Keys.title, Post.Keys.body),
+            ).filter(search=query)
+
+    return render(
+        request=request,
+        template_name="blog/post/search.html",
+        context=dict(
+            form=form,
+            query=query,
+            results=results,
+        ),
     )
