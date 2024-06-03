@@ -1,6 +1,7 @@
 from django.contrib.postgres.search import SearchQuery
 from django.contrib.postgres.search import SearchRank
 from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import TrigramSimilarity
 from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models import QuerySet
@@ -144,13 +145,23 @@ def post_search(request):
             # search_vector = SearchVector(Post.Keys.title, Post.Keys.body, config="spanish")
             # search_query = SearchQuery(query, config="spanish")
 
+            # Filter with ranked results
+            # results: QuerySet[Post] = (
+            #     Post.published.annotate(
+            #         search=search_vector,
+            #         rank=SearchRank(search_vector, search_query),
+            #     )
+            #     .filter(search=search_query, rank__gte=0.3)
+            #     .order_by("-rank")
+            # )
+
+            # Use Postgres search with trigram similarity - PG TrigramExtension
             results: QuerySet[Post] = (
                 Post.published.annotate(
-                    search=search_vector,
-                    rank=SearchRank(search_vector, search_query),
+                    similarity=TrigramSimilarity(Post.Keys.title, query)
                 )
-                .filter(search=search_query, rank__gte=0.3)
-                .order_by("-rank")
+                .filter(similarity__gt=0.1)
+                .order_by("-similarity")
             )
 
     return render(
