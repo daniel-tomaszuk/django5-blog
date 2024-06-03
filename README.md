@@ -1,6 +1,8 @@
 # django5-blog
-Blog app with Django5
-Simple blog app with some common features:
+Blog app with Django5.
+Main aim is to have usage examples of different features in a blog app context. 
+
+Common features:
 
 * posts comments,
 * add posts tags (`django-tagit`),
@@ -11,4 +13,12 @@ Simple blog app with some common features:
 Has examples of custom ORM object manager, custom teplate tags (simple tag and inclusion tag), pagination,
 sitemap XML, RSS feed.
 
-TODO: add tests.
+
+## Start the app  (virtual env recommended)
+```
+pip install -r requirements.txt
+./manage.py migrate
+./manage.py runserver
+```
+
+TODO: add tests, fully docerize.
