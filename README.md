@@ -4,9 +4,9 @@ Main aim is to have usage examples of different features in a blog app context.
 
 Common features:
 
-* posts comments,
-* add posts tags (`django-tagit`),
-* posts sharing with email notifications,
+* post comments,
+* add post tags (`django-tagit`),
+* post sharing with email notifications,
 * suggesttions with most recent / most commented posts,
 * posibility to do full text search with Postgres (stemming, ranking results, removing stop words, weighting queries, trigram),
 
