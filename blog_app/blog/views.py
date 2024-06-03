@@ -1,3 +1,5 @@
+from django.contrib.postgres.search import SearchQuery
+from django.contrib.postgres.search import SearchRank
 from django.contrib.postgres.search import SearchVector
 from django.core.mail import send_mail
 from django.db.models import Count
@@ -131,9 +133,25 @@ def post_search(request):
         form = SearchForm(request.GET)
         if form.is_valid():
             query: str = form.cleaned_data.get("query")
-            results: QuerySet[Post] = Post.published.annotate(
-                search=SearchVector(Post.Keys.title, Post.Keys.body),
-            ).filter(search=query)
+            search_vector = SearchVector(Post.Keys.title, weight="A") + SearchVector(
+                Post.Keys.body, weight="B"
+            )
+
+            search_query = SearchQuery(query)
+
+            # it's possible to pass additional config
+            # check postgres github - master/scr/backend/snowball/stopwords/
+            # search_vector = SearchVector(Post.Keys.title, Post.Keys.body, config="spanish")
+            # search_query = SearchQuery(query, config="spanish")
+
+            results: QuerySet[Post] = (
+                Post.published.annotate(
+                    search=search_vector,
+                    rank=SearchRank(search_vector, search_query),
+                )
+                .filter(search=search_query, rank__gte=0.3)
+                .order_by("-rank")
+            )
 
     return render(
         request=request,
