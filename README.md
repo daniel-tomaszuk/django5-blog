@@ -6,7 +6,7 @@ Simple blog app with some common features:
 * add posts tags (`django-tagit`),
 * posts sharing with email notifications,
 * suggesttions with most recent / most commented posts,
-* posibility to do full text search with Postgres,
+* posibility to do full text search with Postgres (stemming, ranking results, removing stop words, weighting queries, trigram),
 
 Has examples of custom ORM object manager, custom teplate tags (simple tag and inclusion tag), pagination,
 sitemap XML, RSS feed.
